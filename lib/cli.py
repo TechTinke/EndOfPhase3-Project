@@ -39,20 +39,67 @@ def manage_products():
         print("0. Back")
         choice = input("Enter your choice: ")
         if choice == "1":
-            name = input("Product name: ")
-            price = float(input("Price: "))
-            stock = int(input("Stock quantity: "))
-            product = Product(name=name, price=price, stock=stock)
-            session.add(product)
-            session.commit()
-            print("Product added!")
+            try:
+                name = input("Product name: ")
+                if not name:
+                    raise ValueError("Name cannot be empty!")
+                price = float(input("Price: "))
+                if price < 0:
+                    raise ValueError("Price cannot be negative!")
+                stock = int(input("Stock quantity: "))
+                if stock < 0:
+                    raise ValueError("Stock cannot be negative!")
+                product = Product(name=name, price=price, stock=stock)
+                session.add(product)
+                session.commit()
+                print("Product added!")
+            except ValueError as e:
+                print(f"Error: {e}")
+        elif choice == "2":
+            try:
+                product_id = int(input("Product ID to delete: "))
+                product = session.query(Product).get(product_id)
+                if not product:
+                    print("Product not found!")
+                    continue
+                session.delete(product)
+                session.commit()
+                print("Product deleted!")
+            except ValueError:
+                print("Error: Invalid ID!")
         elif choice == "3":
             products = session.query(Product).all()  # List usage
-            for p in products:
-                print(f"ID: {p.id}, Name: {p.name}, Price: ${p.price}, Stock: {p.stock}")
+            if not products:
+                print("No products found.")
+            else:
+                for p in products:
+                    print(f"ID: {p.id}, Name: {p.name}, Price: ${p.price}, Stock: {p.stock}")
+        elif choice == "4":
+            name = input("Enter product name to find: ")
+            product = session.query(Product).filter_by(name=name).first()
+            if product:
+                print(f"ID: {product.id}, Name: {product.name}, Price: ${product.price}, Stock: {product.stock}")
+            else:
+                print("Product not found!")
+        elif choice == "5":
+            try:
+                product_id = int(input("Product ID: "))
+                product = session.query(Product).get(product_id)
+                if not product:
+                    print("Product not found!")
+                    continue
+                sale_items = product.sale_items  # Related objects
+                if not sale_items:
+                    print("No sale items for this product.")
+                else:
+                    for si in sale_items:
+                        print(f"Sale ID: {si.sale_id}, Qty: {si.quantity}, Price at Sale: ${si.price_at_sale}")
+            except ValueError:
+                print("Error: Invalid ID!")
         elif choice == "0":
             break
-        # Add delete, find, and view related objects later
+        else:
+            print("Invalid choice, try again.")
 
 def manage_customers():
     while True:
