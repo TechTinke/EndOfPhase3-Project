@@ -19,9 +19,9 @@ Setup
 Usage
 
 - Products: Add, delete, view, find by name, see sale items.
-- Customers: Add, delete, view, find by name, see sales.
-- Sales: Create, delete, view, see items.
-- Sale Items: Add, delete, view, tie to sales and products.
+- Customers: Add and view customers.
+- Sales: Create and view sales.
+- Sale Items: Add, view, tie to sales and products.
 
 ---
 
